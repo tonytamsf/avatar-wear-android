@@ -77,8 +77,10 @@ public class AvatarWearActivity extends Activity
      * measured by the Gravity sensor, changes with a variation (delta) > GRAVITY_THRESHOLD,
      * we consider that a successful count.
      */
-    private static final float UP_GRAVITY_THRESHOLD = -4.0f;
-    private static final float DOWN_GRAVITY_THRESHOLD = 7.0f;
+    //private static final float UP_GRAVITY_THRESHOLD = -4.0f;
+    //private static final float DOWN_GRAVITY_THRESHOLD = 7.0f;
+    private static final float UP_GRAVITY_THRESHOLD = -0.1f;
+    private static final float DOWN_GRAVITY_THRESHOLD = 1.0f;
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -234,7 +236,6 @@ public class AvatarWearActivity extends Activity
         if (((xValue > 0) && (xValue > DOWN_GRAVITY_THRESHOLD)) ||
                 ((xValue < 0) && (xValue < UP_GRAVITY_THRESHOLD))) {
             String message = "Hello wearable\n Via the data layer" + count;
-
             new SendToDataLayerThread("/count", message).start();
 
             if(timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
@@ -250,6 +251,7 @@ public class AvatarWearActivity extends Activity
      */
     private void onJumpDetected(boolean up) {
 
+        increaseCounter();
 
         // we only count a pair of up and down as one successful movement
         if (up) {
@@ -262,7 +264,7 @@ public class AvatarWearActivity extends Activity
 
         mJumpCounter++;
 
-        increaseCounter();
+        //        increaseCounter();
 
         setCounter(mJumpCounter);
         renewTimer();
