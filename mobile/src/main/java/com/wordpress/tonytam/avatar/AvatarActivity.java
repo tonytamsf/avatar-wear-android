@@ -23,9 +23,7 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
-import com.google.android.gms.wearable.WearableListenerService;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -82,16 +80,16 @@ public class AvatarActivity extends AppCompatActivity
     };
 
     private int avatarResourceIds [] = {
-        R.drawable.avatar_minus_10,
-            R.drawable.avatar_minus_9,
-            R.drawable.avatar_minus_8,
-            R.drawable.avatar_minus_7,
-            R.drawable.avatar_minus_6,
-            R.drawable.avatar_minus_5,
-            R.drawable.avatar_minus_4,
-            R.drawable.avatar_minus_3,
-            R.drawable.avatar_minus_2,
-            R.drawable.avatar_minus_1,
+        R.drawable.avatar_m_10,
+            R.drawable.avatar_m_9,
+            R.drawable.avatar_m_8,
+            R.drawable.avatar_m_7,
+            R.drawable.avatar_m_6,
+            R.drawable.avatar_m_5,
+            R.drawable.avatar_m_4,
+            R.drawable.avatar_m_3,
+            R.drawable.avatar_m_2,
+            R.drawable.avatar_m_1,
             R.drawable.avatar_0,
             R.drawable.avatar_1,
             R.drawable.avatar_2,
@@ -102,7 +100,7 @@ public class AvatarActivity extends AppCompatActivity
             R.drawable.avatar_7,
             R.drawable.avatar_8,
             R.drawable.avatar_9,
-            R.drawable.avatar_10,
+            R.drawable.avatar_10
     };
 
     private boolean mVisible;

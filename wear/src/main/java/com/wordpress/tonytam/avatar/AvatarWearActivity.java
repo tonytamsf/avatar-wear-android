@@ -73,7 +73,7 @@ public class AvatarWearActivity extends Activity
     private static final long TIME_THRESHOLD_NS = 2000000000; // in nanoseconds (= 2sec)
 
     /** We care about 1/2 second measurements */
-    private static final long TIME_THRESHOLD_NS_WAIT = 150000000;
+    private static final long TIME_THRESHOLD_NS_WAIT = 100000000;
     /**
      * Earth gravity is around 9.8 m/s^2 but user may not completely direct his/her hand vertical
      * during the exercise so we leave some room. Basically if the x-component of gravity, as
