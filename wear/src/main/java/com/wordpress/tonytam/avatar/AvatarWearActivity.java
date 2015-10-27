@@ -69,8 +69,11 @@ public class AvatarWearActivity extends Activity
     private static final long SCREEN_ON_TIMEOUT_MS = 2000000; // in milliseconds
 
     /** an up-down movement that takes more than this will not be registered as such **/
+    // private static final long TIME_THRESHOLD_NS = 2000000000; // in nanoseconds (= 2sec)
     private static final long TIME_THRESHOLD_NS = 2000000000; // in nanoseconds (= 2sec)
 
+    /** We care about 1/2 second measurements */
+    private static final long TIME_THRESHOLD_NS_WAIT = 150000000;
     /**
      * Earth gravity is around 9.8 m/s^2 but user may not completely direct his/her hand vertical
      * during the exercise so we leave some room. Basically if the x-component of gravity, as
@@ -83,7 +86,7 @@ public class AvatarWearActivity extends Activity
     private static final float DOWN_GRAVITY_THRESHOLD = 1.0f;
 
     private SensorManager mSensorManager;
-    private Sensor mSensor;
+    private Sensor mSensor, mSensorAccelerometer;
     private long mLastTime = 0;
     private boolean mUp = false;
     private int mJumpCounter = 0;
@@ -96,6 +99,8 @@ public class AvatarWearActivity extends Activity
     private TimerTask mTimerTask;
     private Handler mHandler;
     private static final String COUNT_KEY = "com.example.key.count";
+
+    private int heightValue = 0;
 
     private GoogleApiClient mGoogleApiClient;
     private int count = 0;
@@ -111,6 +116,7 @@ public class AvatarWearActivity extends Activity
         renewTimer();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        mSensorAccelerometer  = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
          mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -196,6 +202,17 @@ public class AvatarWearActivity extends Activity
             if (Log.isLoggable(TAG, Log.DEBUG)) {
                 Log.d(TAG, "Successfully registered for the sensor updates");
             }
+
+        }
+        // TODO:
+        if (false) {
+            if (mSensorManager.registerListener(this, mSensorAccelerometer,
+                    SensorManager.SENSOR_DELAY_NORMAL)) {
+                if (Log.isLoggable(TAG, Log.DEBUG)) {
+                    Log.d(TAG, "Successfully registered for the sensor updates");
+                }
+
+            }
         }
     }
 
@@ -211,12 +228,14 @@ public class AvatarWearActivity extends Activity
     @Override
     public void onSensorChanged(SensorEvent event) {
         detectJump(event.values[0], event.timestamp);
-        Log.d("jump:", String.valueOf(event.values[0]) +
-                "," +
-                String.valueOf(event.values[1]) + " - " +
-                String.valueOf(event.sensor) +
-                String.valueOf(event.accuracy) +
-                " : " + String.valueOf(event.timestamp));
+        if (false) {
+            Log.d("jump:", String.valueOf(event.values[0]) +
+                    "," +
+                    String.valueOf(event.values[1]) + " - " +
+                    String.valueOf(event.sensor) +
+                    String.valueOf(event.accuracy) +
+                    " : " + String.valueOf(event.timestamp));
+        }
     }
 
     @Override
@@ -233,16 +252,32 @@ public class AvatarWearActivity extends Activity
      * TIME_THRESHOLD_NS.
      */
     private void detectJump(float xValue, long timestamp) {
-        if (((xValue > 0) && (xValue > DOWN_GRAVITY_THRESHOLD)) ||
-                ((xValue < 0) && (xValue < UP_GRAVITY_THRESHOLD))) {
-            String message = "Hello wearable\n Via the data layer" + count;
-            new SendToDataLayerThread("/count", message).start();
+        heightValue =  Math.round(xValue);
 
-            if(timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
+        if (false) {
+            if (timestamp - mLastTime < TIME_THRESHOLD_NS) {
                 onJumpDetected(!mUp);
             }
-            mUp = xValue > 0;
+        }
+
+        if ((timestamp - mLastTime) > TIME_THRESHOLD_NS_WAIT) {
+            onJumpDetected(!mUp);
+
             mLastTime = timestamp;
+        }
+
+        if (false ) {
+            if (((xValue > 0) && (xValue > DOWN_GRAVITY_THRESHOLD)) ||
+                    ((xValue < 0) && (xValue < UP_GRAVITY_THRESHOLD))) {
+                //  TODO String message = "Hello wearable\n Via the data layer" + count;
+                // new SendToDataLayerThread("/count", message).start();
+
+                if (timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
+                    onJumpDetected(!mUp);
+                }
+                mUp = xValue > 0;
+                mLastTime = timestamp;
+            }
         }
     }
 
@@ -273,11 +308,11 @@ public class AvatarWearActivity extends Activity
     // Create a data map and put data in it
     private void increaseCounter() {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count");
-        putDataMapReq.getDataMap().putInt(COUNT_KEY, count++);
+        putDataMapReq.getDataMap().putInt(COUNT_KEY, heightValue);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        Log.d("Avatar", "sending data");
+        Log.d("Avatar", "sending data" + String.valueOf(heightValue));
 
         String message = "Hello wearable\n Via the data layer" + count;
         //Requires a new thread to avoid blocking the UI

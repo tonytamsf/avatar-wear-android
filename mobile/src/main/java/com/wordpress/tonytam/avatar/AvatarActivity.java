@@ -52,8 +52,10 @@ public class AvatarActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private int count = 0;
 
+    private int prevCount = -100;
+
     private int flag = 0;
-    private ImageView mFirstIndicator, mSecondIndicator;
+    private ImageView mFirstIndicator;
     /**
      * Some older devices needs a small delay between UI widget updates
      * and a change of the status and navigation bar.
@@ -77,6 +79,30 @@ public class AvatarActivity extends AppCompatActivity
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }}
+    };
+
+    private int avatarResourceIds [] = {
+        R.drawable.avatar_minus_10,
+            R.drawable.avatar_minus_9,
+            R.drawable.avatar_minus_8,
+            R.drawable.avatar_minus_7,
+            R.drawable.avatar_minus_6,
+            R.drawable.avatar_minus_5,
+            R.drawable.avatar_minus_4,
+            R.drawable.avatar_minus_3,
+            R.drawable.avatar_minus_2,
+            R.drawable.avatar_minus_1,
+            R.drawable.avatar_0,
+            R.drawable.avatar_1,
+            R.drawable.avatar_2,
+            R.drawable.avatar_3,
+            R.drawable.avatar_4,
+            R.drawable.avatar_5,
+            R.drawable.avatar_6,
+            R.drawable.avatar_7,
+            R.drawable.avatar_8,
+            R.drawable.avatar_9,
+            R.drawable.avatar_10,
     };
 
     private boolean mVisible;
@@ -130,6 +156,7 @@ public class AvatarActivity extends AppCompatActivity
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
         MessageReceiver messageReceiver = new MessageReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
+        mFirstIndicator = (ImageView) findViewById(R.id.indicator_0);
     }
 
     @Override
@@ -165,6 +192,7 @@ public class AvatarActivity extends AppCompatActivity
                 if (item.getUri().getPath().compareTo("/count") == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     updateCount(dataMap.getInt(COUNT_KEY));
+                    Log.d("onDataChanged", String.valueOf(dataMap.getInt(COUNT_KEY)));
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
@@ -176,10 +204,7 @@ public class AvatarActivity extends AppCompatActivity
     // Our method to update the count
     private void updateCount(int c) {
         Log.d("Avatar", "JUMP TONY!!!");
-        Log.d("Avatar", "JUMP TONY!!!");
-         mFirstIndicator = (ImageView) findViewById(R.id.indicator_0);
-         mSecondIndicator = (ImageView) findViewById(R.id.indicator_1);
-        setIndicator( c % 2 );
+        setIndicator ( c );
     }
     @Override
     public void onConnected(Bundle bundle) {
@@ -232,27 +257,41 @@ public class AvatarActivity extends AppCompatActivity
      * Sets the page indicator for the ViewPager.
      */
     private void setIndicator(int i) {
-        Log.d("Avatar", "Got message");
-        switch (i) {
-            case 0:
-                mFirstIndicator.setImageResource(R.drawable.jump_up_50);
-                mSecondIndicator.setImageResource(R.drawable.jump_up_50);
 
-                break;
-            case 1:
-                mFirstIndicator.setImageResource(R.drawable.jump_down_50);
-                mSecondIndicator.setImageResource(R.drawable.jump_down_50);
-                break;
+        int avatarId = i;
+        avatarId = Math.min(10, avatarId);
+        avatarId = Math.max(-10, avatarId);
+        avatarId = avatarId + 10;
+        avatarId = Math.min(avatarId, 20);
+        avatarId = Math.max(avatarId, 0);
+        Log.d("Avatar Num", String.valueOf(i) + " Prev " + String.valueOf(prevCount));
+
+        if (avatarId == prevCount) {
+            Log.d("setIndicator", "Same avatarId skip");
+            return;
         }
+
+        final int resource
+                = avatarResourceIds[avatarId];
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                mFirstIndicator.setImageResource(resource);
+            }
+        };
+        r.run();
+        prevCount = avatarId;
     }
+
     public class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("message");
             // Display message in UI
             Log.d("Avatar", message);
-            updateCount(flag % 2);
-            flag ++;
+            //updateCount(flag - 10);
+            flag++;
+            flag = flag % 20;
         }
     }
 }
