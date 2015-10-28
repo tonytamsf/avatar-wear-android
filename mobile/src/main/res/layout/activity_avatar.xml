@@ -11,17 +11,11 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
-    <FrameLayout
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/indicator_0"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/jump_down_50"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+    <ImageSwitcher
+
+        android:id="@+id/flipper"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content">
+    </ImageSwitcher>
+
 </FrameLayout>

@@ -13,7 +13,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.ViewSwitcher;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,6 +55,8 @@ public class AvatarActivity extends AppCompatActivity
 
     private int prevCount = -100;
 
+    private ImageView prevView;
+
     private int flag = 0;
     private ImageView mFirstIndicator;
     /**
@@ -79,6 +84,8 @@ public class AvatarActivity extends AppCompatActivity
         }}
     };
 
+    private ImageSwitcher viewSwitcher;
+
     private int avatarResourceIds [] = {
         R.drawable.avatar_m_10,
             R.drawable.avatar_m_9,
@@ -95,11 +102,11 @@ public class AvatarActivity extends AppCompatActivity
             R.drawable.avatar_2,
             R.drawable.avatar_3,
             R.drawable.avatar_4,
-            R.drawable.avatar_5,
-            R.drawable.avatar_6,
-            R.drawable.avatar_7,
             R.drawable.avatar_8,
             R.drawable.avatar_9,
+            R.drawable.avatar_7,
+            R.drawable.avatar_5,
+            R.drawable.avatar_6,
             R.drawable.avatar_10
     };
 
@@ -141,7 +148,16 @@ public class AvatarActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_avatar);
-
+        viewSwitcher = (ImageSwitcher) findViewById(R.id.flipper);
+        viewSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                ImageView myView = new ImageView(getApplicationContext());
+                myView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                myView.setLayoutParams(new ImageSwitcher.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT));
+                return myView;
+            }
+        });
         mVisible = true;
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -154,7 +170,7 @@ public class AvatarActivity extends AppCompatActivity
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
         MessageReceiver messageReceiver = new MessageReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
-        mFirstIndicator = (ImageView) findViewById(R.id.indicator_0);
+        // mFirstIndicator = (ImageView) findViewById(R.id.indicator_0);
     }
 
     @Override
@@ -262,19 +278,22 @@ public class AvatarActivity extends AppCompatActivity
         avatarId = avatarId + 10;
         avatarId = Math.min(avatarId, 20);
         avatarId = Math.max(avatarId, 0);
-        Log.d("Avatar Num", String.valueOf(i) + " Prev " + String.valueOf(prevCount));
+        Log.d("Avatar Num", String.valueOf(i) + " Avatar " + String.valueOf(avatarId));
 
         if (avatarId == prevCount) {
             Log.d("setIndicator", "Same avatarId skip");
             return;
         }
 
+        final int finalChild = avatarId;
         final int resource
                 = avatarResourceIds[avatarId];
+
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                mFirstIndicator.setImageResource(resource);
+                viewSwitcher.setImageResource(resource);
+                 //mFirstIndicator.setImageResource(resource);
             }
         };
         r.run();

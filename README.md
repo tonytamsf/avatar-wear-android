@@ -14,5 +14,9 @@
 - Geo fencing http://developer.android.com/samples/Geofencing/index.html
 - Speed : http://developer.android.com/samples/SpeedTracker/index.html
 
+# Ideas
+- Female 'Ava' and Male 'Tar'
+- Sequence to trigger actions like firing a laser
+
 # Thanks to these blog posts
 - Sending messages http://android-wear-docs.readthedocs.org/en/latest/sync.html
