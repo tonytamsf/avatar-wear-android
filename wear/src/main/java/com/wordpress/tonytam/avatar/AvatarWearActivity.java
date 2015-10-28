@@ -73,7 +73,7 @@ public class AvatarWearActivity extends Activity
     private static final long TIME_THRESHOLD_NS = 2000000000; // in nanoseconds (= 2sec)
 
     /** We care about 1/2 second measurements */
-    private static final long TIME_THRESHOLD_NS_WAIT = 80000000;
+    private static final long TIME_THRESHOLD_NS_WAIT = 50000000;
     /**
      * Earth gravity is around 9.8 m/s^2 but user may not completely direct his/her hand vertical
      * during the exercise so we leave some room. Basically if the x-component of gravity, as
@@ -162,10 +162,10 @@ public class AvatarWearActivity extends Activity
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        String message = "Hello wearable\n Via the data layer";
+        //String message = "Hello wearable\n Via the data layer";
 
         //Requires a new thread to avoid blocking the UI
-        new SendToDataLayerThread("/message_path", message).start();
+        //new SendToDataLayerThread("/message_path", message).start();
     }
 
     @Override
@@ -198,7 +198,7 @@ public class AvatarWearActivity extends Activity
     protected void onResume() {
         super.onResume();
         if (mSensorManager.registerListener(this, mSensor,
-                SensorManager.SENSOR_DELAY_NORMAL)) {
+                SensorManager.SENSOR_DELAY_GAME)) {
             if (Log.isLoggable(TAG, Log.DEBUG)) {
                 Log.d(TAG, "Successfully registered for the sensor updates");
             }
@@ -207,7 +207,7 @@ public class AvatarWearActivity extends Activity
         // TODO:
         if (false) {
             if (mSensorManager.registerListener(this, mSensorAccelerometer,
-                    SensorManager.SENSOR_DELAY_NORMAL)) {
+                    SensorManager.SENSOR_DELAY_GAME)) {
                 if (Log.isLoggable(TAG, Log.DEBUG)) {
                     Log.d(TAG, "Successfully registered for the sensor updates");
                 }
