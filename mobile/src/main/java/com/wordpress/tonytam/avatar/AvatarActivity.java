@@ -102,11 +102,11 @@ public class AvatarActivity extends AppCompatActivity
             R.drawable.avatar_2,
             R.drawable.avatar_3,
             R.drawable.avatar_4,
-            R.drawable.avatar_8,
-            R.drawable.avatar_9,
-            R.drawable.avatar_7,
             R.drawable.avatar_5,
             R.drawable.avatar_6,
+            R.drawable.avatar_7,
+            R.drawable.avatar_8,
+            R.drawable.avatar_9,
             R.drawable.avatar_10
     };
 
@@ -288,15 +288,18 @@ public class AvatarActivity extends AppCompatActivity
         final int finalChild = avatarId;
         final int resource
                 = avatarResourceIds[avatarId];
+        //viewSwitcher.setImageResource(resource);
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                viewSwitcher.setImageResource(resource);
-                 //mFirstIndicator.setImageResource(resource);
-            }
-        };
-        r.run();
+        if (true) {
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    viewSwitcher.setImageResource(resource);
+                    //mFi```rstIndicator.setImageResource(resource);
+                }
+            };
+            r.run();
+        }
         prevCount = avatarId;
     }
 

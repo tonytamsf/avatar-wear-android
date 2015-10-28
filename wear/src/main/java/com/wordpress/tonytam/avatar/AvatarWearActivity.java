@@ -198,7 +198,7 @@ public class AvatarWearActivity extends Activity
     protected void onResume() {
         super.onResume();
         if (mSensorManager.registerListener(this, mSensor,
-                SensorManager.SENSOR_DELAY_GAME)) {
+                SensorManager.SENSOR_DELAY_NORMAL)) {
             if (Log.isLoggable(TAG, Log.DEBUG)) {
                 Log.d(TAG, "Successfully registered for the sensor updates");
             }
@@ -207,7 +207,7 @@ public class AvatarWearActivity extends Activity
         // TODO:
         if (false) {
             if (mSensorManager.registerListener(this, mSensorAccelerometer,
-                    SensorManager.SENSOR_DELAY_GAME)) {
+                    SensorManager.SENSOR_DELAY_NORMAL)) {
                 if (Log.isLoggable(TAG, Log.DEBUG)) {
                     Log.d(TAG, "Successfully registered for the sensor updates");
                 }

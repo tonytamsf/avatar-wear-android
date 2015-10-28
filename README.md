@@ -20,3 +20,6 @@
 
 # Thanks to these blog posts
 - Sending messages http://android-wear-docs.readthedocs.org/en/latest/sync.html
+- http://developer.android.com/reference/android/hardware/SensorManager.html
+- https://developer.android.com/reference/android/view/View.html#setVisibility(int)
+- http://developer.android.com/reference/android/widget/ViewAnimator.html#q=imageflipper
