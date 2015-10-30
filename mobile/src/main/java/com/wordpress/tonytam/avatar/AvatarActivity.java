@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -49,6 +50,8 @@ public class AvatarActivity extends AppCompatActivity
      */
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final String COUNT_KEY = "com.example.key.count";
+    private static final String RAW_X = "com.wordpress.tonytam.avatar.sensorx";
+    private static final String RAW_Y = "com.wordpress.tonytam.avatar.sensory";
 
     private GoogleApiClient mGoogleApiClient;
     private int count = 0;
@@ -59,6 +62,8 @@ public class AvatarActivity extends AppCompatActivity
 
     private int flag = 0;
     private ImageView mFirstIndicator;
+    private TextView textViewData;
+
     /**
      * Some older devices needs a small delay between UI widget updates
      * and a change of the status and navigation bar.
@@ -166,6 +171,8 @@ public class AvatarActivity extends AppCompatActivity
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        textViewData = (TextView) findViewById(R.id.textViewData);
+
         // Register the local broadcast receiver, defined in step 3.
         IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
         MessageReceiver messageReceiver = new MessageReceiver();
@@ -205,7 +212,11 @@ public class AvatarActivity extends AppCompatActivity
                 DataItem item = event.getDataItem();
                 if (item.getUri().getPath().compareTo("/count") == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                    updateCount(dataMap.getInt(COUNT_KEY));
+                    updateCount(
+                            dataMap.getInt(COUNT_KEY),
+                            dataMap.getFloat(RAW_X),
+                            dataMap.getFloat(RAW_Y)
+                            );
                     Log.d("onDataChanged", String.valueOf(dataMap.getInt(COUNT_KEY)));
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
@@ -216,9 +227,16 @@ public class AvatarActivity extends AppCompatActivity
     }
 
     // Our method to update the count
-    private void updateCount(int c) {
+    private void updateCount(int c,
+                             float x,
+                             float y) {
         Log.d("Avatar", "JUMP TONY!!!");
         setIndicator ( c );
+        textViewData.setText(
+                String.valueOf(x) + "\n" +
+                        String.valueOf(y) + "->" +
+                        String.valueOf(c)
+        );
     }
     @Override
     public void onConnected(Bundle bundle) {

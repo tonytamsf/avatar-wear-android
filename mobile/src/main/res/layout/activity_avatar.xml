@@ -11,11 +11,27 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ImageSwitcher
 
         android:id="@+id/flipper"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content">
     </ImageSwitcher>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Multiple lines here"
+            android:id="@+id/textViewData"
+            android:layout_toRightOf="@+id/flipper"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
 
 </FrameLayout>

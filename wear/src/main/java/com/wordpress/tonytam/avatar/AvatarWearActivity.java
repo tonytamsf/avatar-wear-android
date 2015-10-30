@@ -20,6 +20,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
@@ -101,6 +102,8 @@ public class AvatarWearActivity extends Activity
     private TimerTask mTimerTask;
     private Handler mHandler;
     private static final String COUNT_KEY = "com.example.key.count";
+    private static final String RAW_X = "com.wordpress.tonytam.avatar.sensorx";
+    private static final String RAW_Y = "com.wordpress.tonytam.avatar.sensory";
 
     private int heightValue = 0;
 
@@ -229,7 +232,10 @@ public class AvatarWearActivity extends Activity
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        detectJump(event.values[0], event.timestamp);
+
+
+        detectJump(event.values[0], event.timestamp, event);
+
         if (false) {
             Log.d("jump:", String.valueOf(event.values[0]) +
                     "," +
@@ -253,17 +259,17 @@ public class AvatarWearActivity extends Activity
      * GRAVITY_THRESHOLD. We also consider the up <-> down movement successful if it takes less than
      * TIME_THRESHOLD_NS.
      */
-    private void detectJump(float xValue, long timestamp) {
+    private void detectJump(float xValue, long timestamp, SensorEvent v) {
         heightValue =  Math.round(xValue);
 
         if (false) {
             if (timestamp - mLastTime < TIME_THRESHOLD_NS) {
-                onJumpDetected(!mUp);
+                onJumpDetected(!mUp, v);
             }
         }
 
         if ((timestamp - mLastTime) > TIME_THRESHOLD_NS_WAIT) {
-            onJumpDetected(!mUp);
+            onJumpDetected(!mUp, v);
 
             mLastTime = timestamp;
         }
@@ -275,7 +281,7 @@ public class AvatarWearActivity extends Activity
                 // new SendToDataLayerThread("/count", message).start();
 
                 if (timestamp - mLastTime < TIME_THRESHOLD_NS && mUp != (xValue > 0)) {
-                    onJumpDetected(!mUp);
+                    onJumpDetected(!mUp, v);
                 }
                 mUp = xValue > 0;
                 mLastTime = timestamp;
@@ -286,9 +292,9 @@ public class AvatarWearActivity extends Activity
     /**
      * Called on detection of a successful down -> up or up -> down movement of hand.
      */
-    private void onJumpDetected(boolean up) {
+    private void onJumpDetected(boolean up, SensorEvent v) {
 
-        increaseCounter();
+        increaseCounter(v);
 
         // we only count a pair of up and down as one successful movement
         if (up) {
@@ -308,9 +314,12 @@ public class AvatarWearActivity extends Activity
     }
 
     // Create a data map and put data in it
-    private void increaseCounter() {
+    private void increaseCounter(SensorEvent v) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count");
         putDataMapReq.getDataMap().putInt(COUNT_KEY, heightValue);
+        putDataMapReq.getDataMap().putFloat(RAW_X, v.values[0]);
+        putDataMapReq.getDataMap().putFloat(RAW_Y, v.values[1]);
+
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
