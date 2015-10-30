@@ -31,6 +31,8 @@ import com.wordpress.tonytam.avatar.fragments.CounterFragment;
 import com.wordpress.tonytam.avatar.fragments.SettingsFragment;
 
 import android.app.Activity;
+
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -59,7 +61,7 @@ import java.util.TimerTask;
  * stage, user can set this counter to 0.
  */
 public class AvatarWearActivity extends Activity
-        implements SensorEventListener,DataApi.DataListener,
+        implements SensorEventListener, DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
