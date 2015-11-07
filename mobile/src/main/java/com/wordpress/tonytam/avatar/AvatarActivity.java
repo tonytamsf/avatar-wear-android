@@ -64,6 +64,8 @@ public class AvatarActivity extends AppCompatActivity
     private ImageView mFirstIndicator;
     private TextView textViewData;
 
+    PrimeRun aniRunnable;
+
     /**
      * Some older devices needs a small delay between UI widget updates
      * and a change of the status and navigation bar.
@@ -178,6 +180,10 @@ public class AvatarActivity extends AppCompatActivity
         MessageReceiver messageReceiver = new MessageReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
         // mFirstIndicator = (ImageView) findViewById(R.id.indicator_0);
+
+
+        aniRunnable = new PrimeRun(viewSwitcher);
+
     }
 
     @Override
@@ -309,14 +315,8 @@ public class AvatarActivity extends AppCompatActivity
         //viewSwitcher.setImageResource(resource);
 
         if (true) {
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    viewSwitcher.setImageResource(resource);
-                    //mFi```rstIndicator.setImageResource(resource);
-                }
-            };
-            r.run();
+            aniRunnable.setResource(resource);
+            aniRunnable.run();
         }
         prevCount = avatarId;
     }
@@ -330,6 +330,22 @@ public class AvatarActivity extends AppCompatActivity
             //updateCount(flag - 10);
             flag++;
             flag = flag % 20;
+        }
+    }
+    public class PrimeRun implements Runnable {
+        public ImageSwitcher view;
+        int res;
+
+        PrimeRun(ImageSwitcher aniView) {
+            this.view = aniView;
+        }
+
+        public void run() {
+            view.setImageResource(res);
+        }
+
+        public void setResource(int r) {
+            res = r;
         }
     }
 }
